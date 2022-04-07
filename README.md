@@ -1,6 +1,8 @@
 # Nihon Vocabulary Server
 
-## Authentication
+## API
+
+### Authentication
 
 - Login `POST /auth/login`
 - Register `POST /auth/register`
