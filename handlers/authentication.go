@@ -9,7 +9,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -44,12 +43,9 @@ func Login(c *fiber.Ctx) error {
 		Password string `json:"password"`
 	}
 
-	//database
-	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
-
+	//parser
 	var input LoginInput
 
-	//parser
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
@@ -91,27 +87,6 @@ func Login(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	//prepare update data to append token
-	id, _ := primitive.ObjectIDFromHex(*user.ID)
-	user.Token = append(user.Token, t)
-
-	var userToUpdate bson.D
-	userToUpdate = append(userToUpdate, bson.E{Key: "updatedAt", Value: time.Now()}) //updatedAt
-	userToUpdate = append(userToUpdate, bson.E{Key: "token", Value: user.Token})     //token
-
-	query := bson.D{{Key: "_id", Value: id}}
-	update := bson.D{{Key: "$set", Value: userToUpdate}}
-
-	//update
-	err = userCollection.FindOneAndUpdate(c.Context(), query, update).Err()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  "error",
-			"message": "Couldn't login",
-			"data":    err,
-		})
-	}
-
 	return c.JSON(fiber.Map{
 		"status":  "success",
 		"message": "Success login",
@@ -126,7 +101,6 @@ func Logout(c *fiber.Ctx) error {
 }
 
 func Register(c *fiber.Ctx) error {
-	//database
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
 	//new user with user model
@@ -176,7 +150,6 @@ func Register(c *fiber.Ctx) error {
 	user.Password = hash
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
-	user.Token = append(user.Token, t)
 
 	_, err = userCollection.InsertOne(c.Context(), user)
 	if err != nil {
