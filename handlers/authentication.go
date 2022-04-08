@@ -96,10 +96,6 @@ func Login(c *fiber.Ctx) error {
 	})
 }
 
-func Logout(c *fiber.Ctx) error {
-	return c.SendString("logout")
-}
-
 func Register(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
