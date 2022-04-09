@@ -14,6 +14,7 @@ import (
 func CreateVocabulary(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
+	//parser
 	vocabulary := new(models.Vocabulary)
 
 	err := c.BodyParser(&vocabulary)
@@ -25,12 +26,14 @@ func CreateVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//create new vocabulary
 	vocabulary.ID = nil
 	vocabulary.Owner = "public"
 	vocabulary.IsShow = true
 	vocabulary.CreatedAt = time.Now()
 	vocabulary.UpdatedAt = time.Now()
 
+	//insert new vocabulary
 	result, err := vocabularyCollection.InsertOne(c.Context(), vocabulary)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -40,6 +43,7 @@ func CreateVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//find vocabulary after created
 	newVocabulary := &models.Vocabulary{}
 
 	query := bson.D{{Key: "_id", Value: result.InsertedID}}
@@ -58,6 +62,7 @@ func CreateVocabulary(c *fiber.Ctx) error {
 func GetVocabularies(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
+	//find all vocabulary by owner
 	query := bson.M{"owner": "public"}
 
 	filterCursor, err := vocabularyCollection.Find(c.Context(), query)
@@ -69,6 +74,7 @@ func GetVocabularies(c *fiber.Ctx) error {
 		})
 	}
 
+	//push each vocabulary to array
 	var vocabularies []bson.M
 	if err = filterCursor.All(c.Context(), &vocabularies); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -90,6 +96,7 @@ func GetVocabularies(c *fiber.Ctx) error {
 func GetVocabulary(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
+	//get id from params
 	paramID := c.Params("id")
 
 	id, err := primitive.ObjectIDFromHex(paramID)
@@ -101,6 +108,7 @@ func GetVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//find vocabulary by id
 	vocabulary := &models.Vocabulary{}
 
 	query := bson.D{{Key: "_id", Value: id}}
@@ -126,6 +134,7 @@ func GetVocabulary(c *fiber.Ctx) error {
 func UpdateVocabulary(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
+	//get id from params
 	paramID := c.Params("id")
 
 	id, err := primitive.ObjectIDFromHex(paramID)
@@ -137,6 +146,7 @@ func UpdateVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//parser
 	vocabulary := new(models.Vocabulary)
 	err = c.BodyParser(&vocabulary)
 	if err != nil {
@@ -147,6 +157,7 @@ func UpdateVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//define vocabulary data to update
 	query := bson.D{{Key: "_id", Value: id}}
 
 	var vocabularyToUpdate bson.D
@@ -162,6 +173,7 @@ func UpdateVocabulary(c *fiber.Ctx) error {
 	vocabularyToUpdate = append(vocabularyToUpdate, bson.E{Key: "isShow", Value: vocabulary.IsShow})
 	vocabularyToUpdate = append(vocabularyToUpdate, bson.E{Key: "updatedAt", Value: time.Now()})
 
+	//update vocabulary by id
 	update := bson.D{{Key: "$set", Value: vocabularyToUpdate}}
 
 	err = vocabularyCollection.FindOneAndUpdate(c.Context(), query, update).Err()
@@ -173,6 +185,7 @@ func UpdateVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//find vocabulary after updated
 	vocabulary = &models.Vocabulary{}
 	vocabularyCollection.FindOne(c.Context(), query).Decode(vocabulary)
 
@@ -188,6 +201,7 @@ func UpdateVocabulary(c *fiber.Ctx) error {
 func DeleteVocabulary(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
+	//get id from params
 	paramID := c.Params("id")
 
 	id, err := primitive.ObjectIDFromHex(paramID)
@@ -199,6 +213,7 @@ func DeleteVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//delete vocabulary by id
 	query := bson.D{{Key: "_id", Value: id}}
 
 	err = vocabularyCollection.FindOneAndDelete(c.Context(), query).Err()
