@@ -3,13 +3,13 @@ package models
 import "time"
 
 type Vocabulary struct {
-	ID        string    `json:"id,omitempty" bson:"_id,omitempty"`
+	ID        *string   `json:"id,omitempty" bson:"_id,omitempty"`
 	Owner     string    `json:"owner,omitempty" bson:"owner,omitempty"`
 	Japanese  Japanese  `json:"japanese"`
 	Thai      []string  `json:"thai"`
 	English   []string  `json:"english"`
 	Examples  []string  `json:"examples"`
-	Image     string    `json:"string"`
+	Image     string    `json:"image"`
 	Voice     string    `json:"vocie"`
 	Type      string    `json:"type"`
 	Tags      []string  `json:"tags"`
