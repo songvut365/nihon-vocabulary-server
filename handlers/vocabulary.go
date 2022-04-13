@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"nihon-vocabulary/configs"
+	"nihon-vocabulary/middlewares"
 	"nihon-vocabulary/models"
 	"os"
 	"time"
@@ -26,9 +27,12 @@ func CreateVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//get id from token
+	idFromToken := middlewares.GetIdFromToken(c)
+
 	//create new vocabulary
 	vocabulary.ID = nil
-	vocabulary.Owner = "public"
+	vocabulary.Owner = idFromToken
 	vocabulary.IsShow = true
 	vocabulary.CreatedAt = time.Now()
 	vocabulary.UpdatedAt = time.Now()
@@ -62,8 +66,11 @@ func CreateVocabulary(c *fiber.Ctx) error {
 func GetVocabularies(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
+	//get id from token
+	idFromToken := middlewares.GetIdFromToken(c)
+
 	//find all vocabulary by owner
-	query := bson.M{"owner": "public"}
+	query := bson.D{{Key: "owner", Value: idFromToken}}
 
 	filterCursor, err := vocabularyCollection.Find(c.Context(), query)
 	if err != nil {
@@ -108,10 +115,13 @@ func GetVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//get user id from token
+	userIdFromToken := middlewares.GetIdFromToken(c)
+
 	//find vocabulary by id
 	vocabulary := &models.Vocabulary{}
 
-	query := bson.D{{Key: "_id", Value: id}}
+	query := bson.D{{Key: "_id", Value: id}, {Key: "owner", Value: userIdFromToken}}
 
 	err = vocabularyCollection.FindOne(c.Context(), query).Decode(vocabulary)
 	if err != nil {
@@ -157,8 +167,11 @@ func UpdateVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//get user id from token
+	userIdFromToken := middlewares.GetIdFromToken(c)
+
 	//define vocabulary data to update
-	query := bson.D{{Key: "_id", Value: id}}
+	query := bson.D{{Key: "_id", Value: id}, {Key: "owner", Value: userIdFromToken}}
 
 	var vocabularyToUpdate bson.D
 
@@ -213,8 +226,11 @@ func DeleteVocabulary(c *fiber.Ctx) error {
 		})
 	}
 
+	//get id from token
+	idFromToken := middlewares.GetIdFromToken(c)
+
 	//delete vocabulary by id
-	query := bson.D{{Key: "_id", Value: id}}
+	query := bson.D{{Key: "_id", Value: id}, {Key: "owner", Value: idFromToken}}
 
 	err = vocabularyCollection.FindOneAndDelete(c.Context(), query).Err()
 	if err != nil {
