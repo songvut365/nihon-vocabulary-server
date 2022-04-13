@@ -1,6 +1,6 @@
 # Nihon Vocabulary Server
 
-## API
+## APIs
 
 ### Authentication
 
@@ -10,7 +10,6 @@
 
 ### Current User related
 
-- Logout `DELETE /auth/logout`
 - Show info `GET /user`
 - Update info `PUT /user`
 - Change password `PUT /user/password`
@@ -23,3 +22,10 @@
 - Show Vocabulary `GET /vocabulary/:id`
 - Update Vocabulary `PUT /vocabulary/:id`
 - Delete Vocabulary `DELETE /vocabulary/:id`
+
+## Reference
+
+- [Fiber](http://gofiber.io/)
+- [MongoDB Atlas](https://www.mongodb.com/atlas/database)
+- [JWT](https://github.com/golang-jwt/jwt)
+- [bcrypt](https://pkg.go.dev/golang.org/x/crypto/bcrypt)
