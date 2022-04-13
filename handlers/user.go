@@ -129,7 +129,90 @@ func UpdateUser(c *fiber.Ctx) error {
 
 //PUT /api/v1/user/password
 func ChangePasswordUser(c *fiber.Ctx) error {
-	return c.SendString("change password user")
+	type PasswordInput struct {
+		OldPassword string `json:"oldPassword"`
+		NewPassword string `json:"newPassword"`
+	}
+
+	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
+
+	//get id from token
+	idFromToken := middlewares.GetIdFromToken(c)
+	id, err := primitive.ObjectIDFromHex(idFromToken)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Cannot parse id",
+			"data":    err,
+		})
+	}
+
+	//parser
+	var input PasswordInput
+
+	err = c.BodyParser(&input)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Cannot parse json",
+			"data":    err,
+		})
+	}
+
+	//get user by id
+	user, err := GetUserById(&id, c)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "User not found",
+			"data":    err,
+		})
+	}
+
+	//compare old password
+	if !CheckPasswordHash(input.OldPassword, user.Password) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Invalid old password",
+			"data":    err,
+		})
+	}
+
+	//hash new password
+	hash, err := HashPassword(input.NewPassword)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Couldn't hash password",
+			"data":    err,
+		})
+	}
+
+	//define password to update
+	query := bson.D{{Key: "_id", Value: id}}
+
+	var passwordToUpdate bson.D
+
+	passwordToUpdate = append(passwordToUpdate, bson.E{Key: "password", Value: hash})
+	passwordToUpdate = append(passwordToUpdate, bson.E{Key: "updatedAt", Value: time.Now()})
+
+	update := bson.D{{Key: "$set", Value: passwordToUpdate}}
+
+	//update password by id
+	err = userCollection.FindOneAndUpdate(c.Context(), query, update).Err()
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Cannot change password",
+			"data":    err,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "Success change password",
+		"data":    nil,
+	})
 }
 
 //DELETE /api/v1/user
