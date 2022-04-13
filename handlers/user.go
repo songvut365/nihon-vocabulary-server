@@ -217,5 +217,34 @@ func ChangePasswordUser(c *fiber.Ctx) error {
 
 //DELETE /api/v1/user
 func DeleteUser(c *fiber.Ctx) error {
-	return c.SendString("delete user")
+	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
+
+	//get id from token
+	idFromToken := middlewares.GetIdFromToken(c)
+	id, err := primitive.ObjectIDFromHex(idFromToken)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Cannot parse id",
+			"data":    err,
+		})
+	}
+
+	//delete user
+	query := bson.D{{Key: "_id", Value: id}}
+
+	err = userCollection.FindOneAndDelete(c.Context(), query).Err()
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Cannot delete user",
+			"data":    err,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "Success delete user",
+		"data":    nil,
+	})
 }
