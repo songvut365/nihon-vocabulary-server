@@ -9,10 +9,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func getUserByEmail(email *string, c *fiber.Ctx) (*models.User, error) {
+func GetUserByEmail(email *string, c *fiber.Ctx) (*models.User, error) {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
 	user := &models.User{}
@@ -27,12 +28,27 @@ func getUserByEmail(email *string, c *fiber.Ctx) (*models.User, error) {
 	return user, nil
 }
 
-func checkPasswordHash(password, hash string) bool {
+func GetUserById(id *primitive.ObjectID, c *fiber.Ctx) (*models.User, error) {
+	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
+
+	user := &models.User{}
+
+	query := bson.D{{Key: "_id", Value: id}}
+
+	err := userCollection.FindOne(c.Context(), query).Decode(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
 
-func hashPassword(password string) (string, error) {
+func HashPassword(password string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(hashed), err
 }
@@ -57,7 +73,7 @@ func Login(c *fiber.Ctx) error {
 	password := input.Password
 
 	//get user by email
-	user, err := getUserByEmail(&email, c)
+	user, err := GetUserByEmail(&email, c)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
@@ -67,7 +83,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	//compare password
-	if !checkPasswordHash(password, user.Password) {
+	if !CheckPasswordHash(password, user.Password) {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid password",
@@ -110,7 +126,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	//check exist user
-	_, err := getUserByEmail(&user.Email, c)
+	_, err := GetUserByEmail(&user.Email, c)
 	if err == nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
@@ -120,7 +136,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	//hash password
-	hash, err := hashPassword(user.Password)
+	hash, err := HashPassword(user.Password)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
