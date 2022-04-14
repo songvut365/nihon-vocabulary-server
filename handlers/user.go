@@ -13,7 +13,26 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//GET /api/v1/user
+type updateUserInput struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"LastName"`
+}
+
+type changePasswordInput struct {
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
+}
+
+// Get User is a function to get user info from database
+// @Summary Get User
+// @Description Get User
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /user/ [get]
 func GetUser(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
@@ -54,7 +73,18 @@ func GetUser(c *fiber.Ctx) error {
 	})
 }
 
-//PUT /api/v1/user
+// Update User is a function to update user info
+// @Summary Update User
+// @Description Update User
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer token"
+// @Param updateUserInput body updateUserInput true "Update User Form"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /user/ [put]
 func UpdateUser(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
@@ -127,13 +157,20 @@ func UpdateUser(c *fiber.Ctx) error {
 	})
 }
 
-//PUT /api/v1/user/password
+// Change Password is a function to change user password
+// @Summary Change Password
+// @Description Update User
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Param changePasswordInput body changePasswordInput true "Change Password Form"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 401 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /user/password [put]
 func ChangePasswordUser(c *fiber.Ctx) error {
-	type PasswordInput struct {
-		OldPassword string `json:"oldPassword"`
-		NewPassword string `json:"newPassword"`
-	}
-
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
 	//get id from token
@@ -148,7 +185,7 @@ func ChangePasswordUser(c *fiber.Ctx) error {
 	}
 
 	//parser
-	var input PasswordInput
+	var input changePasswordInput
 
 	err = c.BodyParser(&input)
 	if err != nil {
@@ -215,7 +252,16 @@ func ChangePasswordUser(c *fiber.Ctx) error {
 	})
 }
 
-//DELETE /api/v1/user
+// Delete User is a function to delete user account
+// @Summary Delete User
+// @Description Delete User
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /user [delete]
 func DeleteUser(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 

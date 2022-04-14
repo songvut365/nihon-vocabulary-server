@@ -13,6 +13,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type loginInput struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type registerInput struct {
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+}
+
+type resetPasswordInput struct {
+	Email string `json:"email"`
+}
+
 func GetUserByEmail(email *string, c *fiber.Ctx) (*models.User, error) {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
@@ -53,14 +69,21 @@ func HashPassword(password string) (string, error) {
 	return string(hashed), err
 }
 
+// Login is a function to authentication user
+// @Summary Login
+// @Description Login
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param loginInput body loginInput true "Login Form"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 401 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /auth/login [post]
 func Login(c *fiber.Ctx) error {
-	type LoginInput struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-
 	//parser
-	var input LoginInput
+	var input loginInput
 
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -112,13 +135,24 @@ func Login(c *fiber.Ctx) error {
 	})
 }
 
+// Register is a function to register user
+// @Summary Register
+// @Description Register
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param registerInput body registerInput true "Register Form"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /auth/register [post]
 func Register(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
 	//new user with user model
 	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid input",
 			"data":    err,
@@ -128,7 +162,7 @@ func Register(c *fiber.Ctx) error {
 	//check exist user
 	_, err := GetUserByEmail(&user.Email, c)
 	if err == nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Email is already used",
 			"data":    err,
@@ -181,6 +215,17 @@ func Register(c *fiber.Ctx) error {
 	})
 }
 
+// ResetPassword is a function to reset user password
+// @Summary Reset Password
+// @Description Reset Password
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param resetPasswordInput body resetPasswordInput true "Reset Password Form"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /auth/reset-password [post]
 func ResetPassword(c *fiber.Ctx) error {
 	return c.SendString("reset-password")
 }
