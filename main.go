@@ -52,7 +52,7 @@ func main() {
 	routes.UserRoutes(v1)           // PATH api/v1/user
 	routes.VocabularyRoutes(v1)     // PATH api/v1/vocabulary
 
-	err := app.Listen(":3000")
+	err := app.Listen(configs.GetPort())
 	if err != nil {
 		panic(err)
 	}
