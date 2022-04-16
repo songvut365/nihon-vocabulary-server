@@ -35,5 +35,4 @@ type VocabularyInput struct {
 	Voice    string   `json:"vocie"`
 	Type     string   `json:"type"`
 	Tags     []string `json:"tags"`
-}	
-
+}
