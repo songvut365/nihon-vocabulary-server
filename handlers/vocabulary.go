@@ -12,6 +12,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Create Vocabulary is a function to get vocabulary from database
+// @Summary Create Vocabulary
+// @Description Create Vocabulary
+// @Tags Vocabulary
+// @Accept json
+// @Produce json
+// @Param vocabularyInput body models.VocabularyInput true "Vocabulary ID"
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Router /vocabulary [post]
 func CreateVocabulary(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
@@ -63,6 +74,16 @@ func CreateVocabulary(c *fiber.Ctx) error {
 	})
 }
 
+// Get Vocabularies is a function to get all vocabulary from database
+// @Summary Get Vocabularies
+// @Description Get Vocabularies
+// @Tags Vocabulary
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Router /vocabulary/ [get]
 func GetVocabularies(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
@@ -100,6 +121,17 @@ func GetVocabularies(c *fiber.Ctx) error {
 	})
 }
 
+// Get Vocabulary is a function to get vocabulary from database
+// @Summary Get Vocabulary
+// @Description Get Vocabulary
+// @Tags Vocabulary
+// @Accept json
+// @Produce json
+// @Param id path int true "Vocabulary ID"
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Router /vocabulary/{id} [get]
 func GetVocabulary(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
@@ -141,6 +173,18 @@ func GetVocabulary(c *fiber.Ctx) error {
 	})
 }
 
+// Update Vocabulary is a function to update vocabulary to database
+// @Summary Update Vocabulary
+// @Description Update Vocabulary
+// @Tags Vocabulary
+// @Accept json
+// @Produce json
+// @Param vocabularyInput body models.VocabularyInput true "Vocabulary ID"
+// @Param id path int true "Vocabulary ID"
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Router /vocabulary/{id} [put]
 func UpdateVocabulary(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 
@@ -211,6 +255,17 @@ func UpdateVocabulary(c *fiber.Ctx) error {
 	})
 }
 
+// Delete Vocabulary is a function to delete vocabulary from database
+// @Summary Delete Vocabulary
+// @Description Delete Vocabulary
+// @Tags Vocabulary
+// @Accept json
+// @Produce json
+// @Param id path int true "Vocabulary ID"
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Router /vocabulary/{id} [delete]
 func DeleteVocabulary(c *fiber.Ctx) error {
 	vocabularyCollection := configs.MI.DB.Collection(os.Getenv("VOCABULARY_COLLECTION"))
 

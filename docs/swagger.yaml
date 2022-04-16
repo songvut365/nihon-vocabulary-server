@@ -1,20 +1,29 @@
 basePath: /api/v1/
 definitions:
-  handlers.changePasswordInput:
+  models.ChangePasswordInput:
     properties:
       newPassword:
         type: string
       oldPassword:
         type: string
     type: object
-  handlers.loginInput:
+  models.Japanese:
+    properties:
+      kana:
+        type: string
+      kanji:
+        type: string
+      romaji:
+        type: string
+    type: object
+  models.LoginInput:
     properties:
       email:
         type: string
       password:
         type: string
     type: object
-  handlers.registerInput:
+  models.RegisterInput:
     properties:
       email:
         type: string
@@ -25,16 +34,43 @@ definitions:
       password:
         type: string
     type: object
-  handlers.resetPasswordInput:
+  models.ResetPasswordInput:
     properties:
       email:
         type: string
     type: object
-  handlers.updateUserInput:
+  models.UpdateUserInput:
     properties:
       LastName:
         type: string
       firstName:
+        type: string
+    type: object
+  models.VocabularyInput:
+    properties:
+      english:
+        items:
+          type: string
+        type: array
+      examples:
+        items:
+          type: string
+        type: array
+      image:
+        type: string
+      japanese:
+        $ref: '#/definitions/models.Japanese'
+      tags:
+        items:
+          type: string
+        type: array
+      thai:
+        items:
+          type: string
+        type: array
+      type:
+        type: string
+      vocie:
         type: string
     type: object
 info:
@@ -56,7 +92,7 @@ paths:
         name: loginInput
         required: true
         schema:
-          $ref: '#/definitions/handlers.loginInput'
+          $ref: '#/definitions/models.LoginInput'
       produces:
       - application/json
       responses:
@@ -94,7 +130,7 @@ paths:
         name: registerInput
         required: true
         schema:
-          $ref: '#/definitions/handlers.registerInput'
+          $ref: '#/definitions/models.RegisterInput'
       produces:
       - application/json
       responses:
@@ -127,7 +163,7 @@ paths:
         name: resetPasswordInput
         required: true
         schema:
-          $ref: '#/definitions/handlers.resetPasswordInput'
+          $ref: '#/definitions/models.ResetPasswordInput'
       produces:
       - application/json
       responses:
@@ -218,7 +254,7 @@ paths:
         name: updateUserInput
         required: true
         schema:
-          $ref: '#/definitions/handlers.updateUserInput'
+          $ref: '#/definitions/models.UpdateUserInput'
       produces:
       - application/json
       responses:
@@ -253,7 +289,7 @@ paths:
         name: changePasswordInput
         required: true
         schema:
-          $ref: '#/definitions/handlers.changePasswordInput'
+          $ref: '#/definitions/models.ChangePasswordInput'
       produces:
       - application/json
       responses:
@@ -280,6 +316,166 @@ paths:
       summary: Change Password
       tags:
       - User
+  /vocabulary:
+    post:
+      consumes:
+      - application/json
+      description: Create Vocabulary
+      parameters:
+      - description: Vocabulary ID
+        in: body
+        name: vocabularyInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.VocabularyInput'
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create Vocabulary
+      tags:
+      - Vocabulary
+  /vocabulary/:
+    get:
+      consumes:
+      - application/json
+      description: Get Vocabularies
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Vocabularies
+      tags:
+      - Vocabulary
+  /vocabulary/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Vocabulary
+      parameters:
+      - description: Vocabulary ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete Vocabulary
+      tags:
+      - Vocabulary
+    get:
+      consumes:
+      - application/json
+      description: Get Vocabulary
+      parameters:
+      - description: Vocabulary ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Vocabulary
+      tags:
+      - Vocabulary
+    put:
+      consumes:
+      - application/json
+      description: Update Vocabulary
+      parameters:
+      - description: Vocabulary ID
+        in: body
+        name: vocabularyInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.VocabularyInput'
+      - description: Vocabulary ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update Vocabulary
+      tags:
+      - Vocabulary
 securityDefinitions:
   ApiKeyAuth:
     in: header

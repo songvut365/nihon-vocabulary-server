@@ -13,22 +13,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type loginInput struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type registerInput struct {
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-}
-
-type resetPasswordInput struct {
-	Email string `json:"email"`
-}
-
 func GetUserByEmail(email *string, c *fiber.Ctx) (*models.User, error) {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
 
@@ -75,7 +59,7 @@ func HashPassword(password string) (string, error) {
 // @Tags Authentication
 // @Accept json
 // @Produce json
-// @Param loginInput body loginInput true "Login Form"
+// @Param loginInput body models.LoginInput true "Login Form"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Failure 401 {object} map[string]interface{}
@@ -83,7 +67,7 @@ func HashPassword(password string) (string, error) {
 // @Router /auth/login [post]
 func Login(c *fiber.Ctx) error {
 	//parser
-	var input loginInput
+	var input models.LoginInput
 
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -141,7 +125,7 @@ func Login(c *fiber.Ctx) error {
 // @Tags Authentication
 // @Accept json
 // @Produce json
-// @Param registerInput body registerInput true "Register Form"
+// @Param registerInput body models.RegisterInput true "Register Form"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Failure 500 {object} map[string]interface{}
@@ -221,7 +205,7 @@ func Register(c *fiber.Ctx) error {
 // @Tags Authentication
 // @Accept json
 // @Produce json
-// @Param resetPasswordInput body resetPasswordInput true "Reset Password Form"
+// @Param resetPasswordInput body models.ResetPasswordInput true "Reset Password Form"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Failure 500 {object} map[string]interface{}

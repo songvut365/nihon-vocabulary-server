@@ -39,7 +39,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.loginInput"
+                            "$ref": "#/definitions/models.LoginInput"
                         }
                     }
                 ],
@@ -95,7 +95,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.registerInput"
+                            "$ref": "#/definitions/models.RegisterInput"
                         }
                     }
                 ],
@@ -144,7 +144,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.resetPasswordInput"
+                            "$ref": "#/definitions/models.ResetPasswordInput"
                         }
                     }
                 ],
@@ -283,7 +283,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.updateUserInput"
+                            "$ref": "#/definitions/models.UpdateUserInput"
                         }
                     }
                 ],
@@ -332,7 +332,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.changePasswordInput"
+                            "$ref": "#/definitions/models.ChangePasswordInput"
                         }
                     }
                 ],
@@ -367,10 +367,245 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/vocabulary": {
+            "post": {
+                "description": "Create Vocabulary",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vocabulary"
+                ],
+                "summary": "Create Vocabulary",
+                "parameters": [
+                    {
+                        "description": "Vocabulary ID",
+                        "name": "vocabularyInput",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.VocabularyInput"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/vocabulary/": {
+            "get": {
+                "description": "Get Vocabularies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vocabulary"
+                ],
+                "summary": "Get Vocabularies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/vocabulary/{id}": {
+            "get": {
+                "description": "Get Vocabulary",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vocabulary"
+                ],
+                "summary": "Get Vocabulary",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Vocabulary ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update Vocabulary",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vocabulary"
+                ],
+                "summary": "Update Vocabulary",
+                "parameters": [
+                    {
+                        "description": "Vocabulary ID",
+                        "name": "vocabularyInput",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.VocabularyInput"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Vocabulary ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete Vocabulary",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vocabulary"
+                ],
+                "summary": "Delete Vocabulary",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Vocabulary ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "handlers.changePasswordInput": {
+        "models.ChangePasswordInput": {
             "type": "object",
             "properties": {
                 "newPassword": {
@@ -381,7 +616,21 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.loginInput": {
+        "models.Japanese": {
+            "type": "object",
+            "properties": {
+                "kana": {
+                    "type": "string"
+                },
+                "kanji": {
+                    "type": "string"
+                },
+                "romaji": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LoginInput": {
             "type": "object",
             "properties": {
                 "email": {
@@ -392,7 +641,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.registerInput": {
+        "models.RegisterInput": {
             "type": "object",
             "properties": {
                 "email": {
@@ -409,7 +658,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.resetPasswordInput": {
+        "models.ResetPasswordInput": {
             "type": "object",
             "properties": {
                 "email": {
@@ -417,13 +666,54 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.updateUserInput": {
+        "models.UpdateUserInput": {
             "type": "object",
             "properties": {
                 "LastName": {
                     "type": "string"
                 },
                 "firstName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.VocabularyInput": {
+            "type": "object",
+            "properties": {
+                "english": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "examples": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "image": {
+                    "type": "string"
+                },
+                "japanese": {
+                    "$ref": "#/definitions/models.Japanese"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "thai": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                },
+                "vocie": {
                     "type": "string"
                 }
             }

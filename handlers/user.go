@@ -13,16 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type updateUserInput struct {
-	FirstName string `json:"firstName"`
-	LastName  string `json:"LastName"`
-}
-
-type changePasswordInput struct {
-	OldPassword string `json:"oldPassword"`
-	NewPassword string `json:"newPassword"`
-}
-
 // Get User is a function to get user info from database
 // @Summary Get User
 // @Description Get User
@@ -81,7 +71,7 @@ func GetUser(c *fiber.Ctx) error {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param Authorization header string true "Bearer token"
-// @Param updateUserInput body updateUserInput true "Update User Form"
+// @Param updateUserInput body models.UpdateUserInput true "Update User Form"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /user/ [put]
@@ -164,7 +154,7 @@ func UpdateUser(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer token"
-// @Param changePasswordInput body changePasswordInput true "Change Password Form"
+// @Param changePasswordInput body models.ChangePasswordInput true "Change Password Form"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Failure 401 {object} map[string]interface{}
@@ -185,7 +175,7 @@ func ChangePasswordUser(c *fiber.Ctx) error {
 	}
 
 	//parser
-	var input changePasswordInput
+	var input models.ChangePasswordInput
 
 	err = c.BodyParser(&input)
 	if err != nil {
