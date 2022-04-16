@@ -1,5 +1,22 @@
 # Nihon Vocabulary Server
 
+## Environment (.env)
+
+- MONGO_URI
+- DATABASE_NAME
+- VOCABULARY_COLLECTION
+- USER_COLLECTION
+- SECRET
+- PORT
+
+## Docker
+
+```cmd
+docker build -t nihon-vocabulary .
+docker image ls
+docker run -d -p 8080:8080 --name nv01 --env-file .\.env nihon-vocabulary
+```
+
 ## APIs
 
 ### Authentication
