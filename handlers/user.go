@@ -20,8 +20,8 @@ import (
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer token"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.Response
 // @Router /user/ [get]
 func GetUser(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
@@ -72,8 +72,8 @@ func GetUser(c *fiber.Ctx) error {
 // @Security ApiKeyAuth
 // @Param Authorization header string true "Bearer token"
 // @Param updateUserInput body models.UpdateUserInput true "Update User Form"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.Response
 // @Router /user/ [put]
 func UpdateUser(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
@@ -155,10 +155,10 @@ func UpdateUser(c *fiber.Ctx) error {
 // @Produce json
 // @Param Authorization header string true "Bearer token"
 // @Param changePasswordInput body models.ChangePasswordInput true "Change Password Form"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 401 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.Response
+// @Failure 401 {object} models.Response
+// @Failure 500 {object} models.Response
 // @Router /user/password [put]
 func ChangePasswordUser(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
@@ -249,8 +249,8 @@ func ChangePasswordUser(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer token"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.Response
 // @Router /user [delete]
 func DeleteUser(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))

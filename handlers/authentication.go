@@ -60,10 +60,10 @@ func HashPassword(password string) (string, error) {
 // @Accept json
 // @Produce json
 // @Param loginInput body models.LoginInput true "Login Form"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 401 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.Response
+// @Failure 401 {object} models.Response
+// @Failure 500 {object} models.Response
 // @Router /auth/login [post]
 func Login(c *fiber.Ctx) error {
 	//parser
@@ -126,9 +126,9 @@ func Login(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param registerInput body models.RegisterInput true "Register Form"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.Response
+// @Failure 500 {object} models.Response
 // @Router /auth/register [post]
 func Register(c *fiber.Ctx) error {
 	userCollection := configs.MI.DB.Collection(os.Getenv("USER_COLLECTION"))
@@ -206,9 +206,9 @@ func Register(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param resetPasswordInput body models.ResetPasswordInput true "Reset Password Form"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.Response
+// @Failure 500 {object} models.Response
 // @Router /auth/reset-password [post]
 func ResetPassword(c *fiber.Ctx) error {
 	return c.SendString("reset-password")
