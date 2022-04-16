@@ -8,7 +8,10 @@ import (
 
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 // @title Nihon Vocabulary
@@ -25,7 +28,11 @@ import (
 // @BasePath /api/v1/
 func main() {
 	app := fiber.New()
-	app.Use(logger.New())
+
+	//fiber middlewares
+	app.Use(cors.New())
+	app.Use(recover.New())
+	app.Get("/dashboard", monitor.New())
 
 	//setup .env
 	configs.SetupEnv()
@@ -33,9 +40,11 @@ func main() {
 	//connect database
 	configs.ConnectDB()
 
-	//setup routesapp
+	//setup routes app
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
+
+	v1.Use(logger.New()) // log only /api/v1/
 
 	v1.Get("/docs/*", swagger.HandlerDefault) //swagger PATH api/v1/docs/
 
